@@ -189,7 +189,14 @@ void parseObject(int inObject, char* pkey) {
                 skipSpace();
                 status = 2;
                 break;
-            case 2: /* 解析key_2 */
+            case 2: /* 对象是否结束 */
+                if (tryChar('}')) {
+                    status = 17; /* 对象结束 */
+                } else {
+                    status = 3;
+                }
+                break;
+            case 3: /* 解析key_2 */
                 parseRawString(key);
                 status = 5;
                 break;
@@ -258,27 +265,34 @@ void parseArray(int inObject, char* pkey) {
                 skipSpace();
                 status = 2;
                 break;
-            case 2: /* 解析元素_2 */
-                parseValue(0, NULL);
-                status = 3;
-                break;
-            case 3: /* 解析逗号_1 */
-                skipSpace();
-                status = 4;
-                break;
-            case 4: /* 解析逗号或结尾_2 */
-                if (tryChar(',')) {
-                    getchar();
-                    status = 1; /* 继续解析key */
+            case 2: /* 数组是否结束 */
+                if (tryChar(']')) {
+                    status = 11; /* 数组结束 */
                 } else {
                     status = 5;
                 }
                 break;
-            case 5: /* 解析结尾_3 */
-                expected(']');
+            case 5: /* 解析元素_2 */
+                parseValue(0, NULL);
                 status = 6;
                 break;
-            case 6: /* 解析结束 */
+            case 6: /* 解析逗号_1 */
+                skipSpace();
+                status = 10;
+                break;
+            case 10: /* 解析逗号或结尾_2 */
+                if (tryChar(',')) {
+                    getchar();
+                    status = 1; /* 继续解析元素 */
+                } else {
+                    status = 11;
+                }
+                break;
+            case 11: /* 解析结尾_3 */
+                expected(']');
+                status = 12;
+                break;
+            case 12: /* 解析结束 */
                 printf("ARRAY_END\n");
                 status = -1;
                 break;
@@ -289,12 +303,12 @@ void parseArray(int inObject, char* pkey) {
     }
 }
 
-int main() {
+int main(int argc, char const *argv[]) {
     int type;
-    /*
-    freopen("data.in", "r", stdin);
-    freopen("data.out", "w+", stdout);
-    */
+    if (argc >= 2) {
+        freopen(argv[1], "r", stdin);
+        freopen(argv[2], "w+", stdout);
+    }
     skipSpace();
     parseValue(0, NULL);
     printError(error);
