@@ -255,7 +255,7 @@ void parseArray(int inObject, char* pkey) {
     while (status >= 0) {
         if (error) {
             status = -1;
-        }\
+        }
         switch (status) {
             case 0:
                 expected('[');
