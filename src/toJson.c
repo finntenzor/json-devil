@@ -181,18 +181,20 @@ void parseValue(int inObject, int type) {
     }
 }
 
-int main() {
+int main(int argc, char* argv[]) {
     /**
-     * 以下两行为输入输出重定向
-     * 如果将这两代码的注释取消
-     * 那么程序会从同文件夹下的data.in文件读取输入
-     * 向data.out文件写入输出
+     * argc为命令行参数个数
+     * argv为命令行参数字符串列表
+     * 有兴趣可以百度查一下，没兴趣可以将这一段忽略
      */
-
-    /*
-    freopen("data.in", "r", stdin);
-    freopen("data.out", "w", stdout);
-    */
+    if (argc >= 1) {
+        /* 输入重定向，从文件读取输入而不是键盘 */
+        freopen(argv[1], "r", stdin);
+    }
+    if (argc >= 2) {
+        /* 输出重定向，向文件写入输出而不是屏幕 */
+        freopen(argv[2], "w", stdout);
+    }
 
     /* 输入保证根元素只有一个，先获取其类型 */
     int type = getType();

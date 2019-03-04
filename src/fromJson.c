@@ -305,9 +305,12 @@ void parseArray(int inObject, char* pkey) {
 
 int main(int argc, char const *argv[]) {
     int type;
-    if (argc >= 2) {
+    /* 以下为调试用命令行参数，可以无视掉 */
+    if (argc >= 1) {
         freopen(argv[1], "r", stdin);
-        freopen(argv[2], "w+", stdout);
+    }
+    if (argc >= 2) {
+        freopen(argv[2], "w", stdout);
     }
     skipSpace();
     parseValue(0, NULL);
